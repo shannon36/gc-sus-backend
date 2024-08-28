@@ -1,0 +1,68 @@
+package com.ncs.nucleusproject1.app.user.controller;
+
+/*@author: Shannon Heng, 9 October 2023*/
+/*modified on 14 Nov by Shannon to include user role*/
+
+import com.ncs.nucleusproject1.app.user.model.User;
+import com.ncs.nucleusproject1.app.user.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import java.util.List;
+
+@RequestMapping("/Users")
+@RestController
+@CrossOrigin(origins = {"http://localhost:4200", "http://13.229.63.255:8080", "https://smartcart.nus.yaphanyee.com"})
+public class UserController {
+
+    @Autowired
+    UserService userService;
+
+    @GetMapping("/userList")
+    public ResponseEntity<List<User>> getUserList()
+    {
+        return ResponseEntity.ok(userService.getListOfExistingUsers());
+    }
+
+    @GetMapping("/usersListByRole")
+    public ResponseEntity<List<User>> usersListByRole(String roleChar)
+    {
+        return ResponseEntity.ok(userService.getListOfExistingUsersByRole(roleChar));
+    }
+
+    @GetMapping("/userEmail")
+    public ResponseEntity<User>   getUserByEmail(String custEmail){
+        return ResponseEntity.ok(userService.getUserByEmail(custEmail));
+    }
+
+    @GetMapping("/userGivenName")
+    public ResponseEntity<User>findUserByFirstName(String firstName){
+        return ResponseEntity.ok(userService.getUserByFirstName(firstName));
+    }
+
+//    @GetMapping("/userLastName")
+//    public ResponseEntity<User>findUserByLastName(String lastName){
+//        return ResponseEntity.ok(userService.getUserByLastName(lastName));
+//    }
+
+    @GetMapping("/userId")
+    public ResponseEntity<User>findUserById(String userId){
+        return ResponseEntity.ok(userService.getUserByUserId(userId));
+    }
+
+    @PostMapping("/saveUser")
+    public ResponseEntity<Object> addUser(@RequestBody User userReqBody) {
+        userService.saveUser(userReqBody);
+        return new ResponseEntity<>("Ok", HttpStatus.OK);
+    }
+
+    @PostMapping("/deleteUserById")
+    public ResponseEntity<Object> deleteUser(String custId) {
+        userService.deleteUserById(custId);
+        return new ResponseEntity<>("Ok", HttpStatus.OK);
+    }
+
+
+    }
+
