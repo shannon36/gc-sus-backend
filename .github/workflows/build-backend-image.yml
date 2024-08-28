@@ -53,7 +53,7 @@ jobs:
     - name: Commit and push changes
       run: |
         echo "Replacing tag with SHA: ${{ github.sha }}"
-        sed -i "s/image:.*/image: ghcr.io\/shannon36\/gc-sus-backend:${{ github.sha }}/" ./gc-sus-deployment/backend/deployment.yaml
+        sed -i "s/image:.*/image: ghcr.io\/shannon36\/gc-sus-backend:${{ github.sha }}/" ./shannon36/gc-sus-deployment/backend/deployment.yaml
         cd ./gc-sus-deployment
         git config user.name "github-actions[bot]"
         git config user.email "github-actions[bot]@users.noreply.github.com"
