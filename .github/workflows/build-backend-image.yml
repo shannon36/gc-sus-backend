@@ -29,7 +29,7 @@ jobs:
 
     - name: Build Docker image
       run: |
-        cd backend
+        cd backend_nus
         docker build -t ghcr.io/shannon36/gc-sus-backend .
 
     # name: Test Docker image
