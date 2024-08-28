@@ -1,0 +1,32 @@
+To configure environment (for Backend)
+###Refer to folder named: backend_nus
+
+###Author: Shannon on 15 October 2023
+
+Install Intellij and ensure that you have JDK 17.
+
+Open Intellij and follow this link to import maven Spring boot project: https://www.jetbrains.com/idea/guide/tutorials/working-with-maven/importing-a-project/
+
+Ensure project structure is set as such - refer to images ProjectStructure1.PNG and ProjectStructure2.PNG inside authornotes_backend folder (https://github.com/hanyeencs/nusiss-smartcart/tree/main/backend_nus/authornotes_backend)
+
+If run configuration exists, please ensure that it is set as such - refer to image RunConfig3.PNG inside authornotes_backend folder (https://github.com/hanyeencs/nusiss-smartcart/tree/main/backend_nus/authornotes_backend)
+
+Press play button if run config is set as seen in point 4. *If not, add a run configuration for the project as an Application and set it as you see in point 4.
+
+Please refer to the configured swagger UI: http://13.229.63.255:9090/swagger-ui/index.html#/
+
+for searchUrls in service.ts files in frontend and for JSON response bodies.
+<<<<<<< HEAD
+<<<<<<< HEAD
+*An example of a searchUrl: http://13.229.63.255:9090/Products/getProductsByCategoryId?pdtCatId=C11 under Products/getProductsByCategoryId (expandable)
+=======
+*An example of a searchUrl: http://localhost:9090/Products/getProductsByCategoryId?pdtCatId=C11 under Products/getProductsByCategoryId (expandable)
+
+The following links are allowed to request from backend: "http://localhost:4200", "http://XX.XXX.63.255:8080", "https://smartcart.nus.yaphanyee.com"
+>>>>>>> 7cdeccaa488a0aad98bed520083390a61bdb8b51
+=======
+
+*An example of a searchUrl: http://localhost:9090/Products/getProductsByCategoryId?pdtCatId=C11 under Products/getProductsByCategoryId (expandable)
+
+The following links are allowed to request from backend: "http://localhost:4200", "http://XX.XXX.63.255:8080", "https://smartcart.nus.yaphanyee.com"
+>>>>>>> 7f4096434011b22b4e546f15f47fb7a69e882137
