@@ -7,7 +7,7 @@ name: Backend app docker image build and manifest update
 on:
   push:
     paths:
-      - 'backend/**'
+      - 'backend_nus/**'
 
 jobs:
   build:
@@ -49,6 +49,11 @@ jobs:
     - name: Clone manifest repository
       run: |
         git clone https://github.com/shannon36/gc-sus-backend.git
+    
+    - name: Open gc-sus-deployment/backend directory
+      working-directory: /shannon36/gc-sus-deployment/backend
+      run: | 
+        ls -la
 
     - name: Commit and push changes
       run: |
