@@ -111,6 +111,13 @@
             <artifactId>jasypt-spring-boot-starter</artifactId>
             <version>3.0.5</version>
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.hierynomus/sshj -->
+        <!--<dependency>
+            <groupId>com.hierynomus</groupId>
+            <artifactId>sshj</artifactId>
+            <version>0.38.0</version>
+        </dependency>-->
     </dependencies>
 
     <build>

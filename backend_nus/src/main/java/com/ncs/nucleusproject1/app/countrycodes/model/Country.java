@@ -12,7 +12,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-@Table(name = "country")
+@Table(name = "tbl_country")
 
 public class Country implements Serializable {
 
