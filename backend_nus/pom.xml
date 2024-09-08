@@ -16,7 +16,7 @@
     <properties>
         <java.version>17</java.version>
     </properties>
-    <profiles>
+   <profiles>
         <profile>
             <id>dev</id>
             <activation>
@@ -119,12 +119,6 @@
             <version>3.3.3</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/com.hierynomus/sshj -->
-        <!--<dependency>
-            <groupId>com.hierynomus</groupId>
-            <artifactId>sshj</artifactId>
-            <version>0.38.0</version>
-        </dependency>-->
     </dependencies>
 
     <build>
