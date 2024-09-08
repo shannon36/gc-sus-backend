@@ -18,6 +18,8 @@ WORKDIR /app
 # Copy the JAR file from the build stage to the deployment stage
 COPY --from=build /app/target/nucleus_iss-1.0-SNAPSHOT.jar app.jar
 # Expose the port on which your Java application will run
-EXPOSE 90
+#EXPOSE 90
+EXPOSE 8080
 # Define the command to run your Java application
-CMD ["java","-Dserver.port=90" , "-jar", "app.jar"]
+#CMD ["java","-Dserver.port=90" , "-jar", "app.jar"]
+CMD ["java", "-jar", "app.jar"]
