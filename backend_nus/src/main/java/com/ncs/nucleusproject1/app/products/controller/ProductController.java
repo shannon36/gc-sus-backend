@@ -4,11 +4,18 @@ package com.ncs.nucleusproject1.app.products.controller;
 /*modified on 14 Nov by Shannon to include seller id*/
 
 import com.ncs.nucleusproject1.app.products.model.Product;
+import com.ncs.nucleusproject1.app.products.model.ProductCategory;
 import com.ncs.nucleusproject1.app.products.service.ProductService;
+import jakarta.persistence.Column;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 @RequestMapping("/Products")
@@ -53,5 +60,22 @@ public class ProductController {
         return new ResponseEntity<>("Ok", HttpStatus.OK);
     }
 
+    // Shannon - added on 11 Sept 2024 to update pdt
+    @PutMapping("/updateProduct")
+    public ResponseEntity<Object> updateProductById(String pdtId, @RequestBody Product pdtReqBody) {
+        Product currPdt = pdtService.getProductById(pdtId);
+        if (currPdt!=null && !currPdt.getCatid().isEmpty()){
+            currPdt.setSellerid(pdtReqBody.getSellerid());
+            currPdt.setCatid(pdtReqBody.getCatid());
+            currPdt.setName(pdtReqBody.getName());
+            currPdt.setDescription(pdtReqBody.getDescription());
+            currPdt.setImageUrl(pdtReqBody.getImageUrl());
+            currPdt.setUnitPrice(pdtReqBody.getUnitPrice());
+            currPdt.setUnitsInStock(pdtReqBody.getUnitsInStock());
+            currPdt.setLastUpdated(pdtReqBody.getLastUpdated());
+            pdtService.updatePdtById(currPdt);}
+        return new ResponseEntity<>("Ok", HttpStatus.OK);
     }
+
+}
 

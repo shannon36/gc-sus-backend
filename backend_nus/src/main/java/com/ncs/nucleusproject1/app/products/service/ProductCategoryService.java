@@ -48,6 +48,13 @@ public class ProductCategoryService {
                 pdtCatRepo.deleteByCatid(pdtCatId);
         }
 
+        // Shannon - added on 11 Sept 2024 to update pdt cat name
+        @Transactional
+        public void updatePdtCatById(ProductCategory currPdtCat)
+        {       log.info("Current Product Category to be saved: "+currPdtCat);
+                pdtCatRepo.save(currPdtCat);
+        }
+
 
 }
 

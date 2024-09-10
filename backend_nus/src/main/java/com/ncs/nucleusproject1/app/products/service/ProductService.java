@@ -4,6 +4,7 @@ package com.ncs.nucleusproject1.app.products.service;
 /*modified on 14 Nov by Shannon to include seller id*/
 
 import com.ncs.nucleusproject1.app.products.model.Product;
+import com.ncs.nucleusproject1.app.products.model.ProductCategory;
 import com.ncs.nucleusproject1.app.products.repository.ProductRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.log4j.Log4j2;
@@ -71,4 +72,12 @@ public class ProductService {
         log.info(pdtRepo.findDistinctFirstByPdtid(pdtId));
         pdtRepo.deleteByPdtid(pdtId);
     }
+
+    // Shannon - added on 11 Sept 2024 to update pdt
+    @Transactional
+    public void updatePdtById(Product currPdt)
+    {       log.info("Current Product to be saved: "+currPdt);
+        pdtRepo.save(currPdt);
+    }
+
 }
