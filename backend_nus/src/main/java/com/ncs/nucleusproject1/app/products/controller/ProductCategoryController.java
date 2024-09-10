@@ -4,6 +4,7 @@ package com.ncs.nucleusproject1.app.products.controller;
 
 import com.ncs.nucleusproject1.app.products.model.ProductCategory;
 import com.ncs.nucleusproject1.app.products.service.ProductCategoryService;
+import com.ncs.nucleusproject1.app.user.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,6 +41,16 @@ public class ProductCategoryController {
     @PostMapping("/deleteProductCategoryById")
     public ResponseEntity<Object> deleteProductCat(String pdtCatId) {
         pdtCatService.deleteProductCatById(pdtCatId);
+        return new ResponseEntity<>("Ok", HttpStatus.OK);
+    }
+
+    // Shannon - added on 11 Sept 2024 to update pdt cat name
+    @PutMapping("/updateProductCatById")
+    public ResponseEntity<Object> updateProductCatById(String pdtCatId, @RequestBody ProductCategory pdtCatReqBody) {
+        ProductCategory currPdtCat = pdtCatService.getProductCategoryById(pdtCatId);
+        if (currPdtCat!=null && !currPdtCat.getCatid().isEmpty()){
+            currPdtCat.setCategoryname(pdtCatReqBody.getCategoryname());
+            pdtCatService.updatePdtCatById(currPdtCat);}
         return new ResponseEntity<>("Ok", HttpStatus.OK);
     }
 
