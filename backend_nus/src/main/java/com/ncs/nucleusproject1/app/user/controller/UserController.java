@@ -32,19 +32,15 @@ public class UserController {
     }
 
     @GetMapping("/userEmail")
-    public ResponseEntity<User>   getUserByEmail(String custEmail){
-        return ResponseEntity.ok(userService.getUserByEmail(custEmail));
+    public ResponseEntity<User>   getUserByEmail(String email){
+        return ResponseEntity.ok(userService.getUserByEmail(email));
     }
 
-    @GetMapping("/userGivenName")
-    public ResponseEntity<User>findUserByFirstName(String firstName){
-        return ResponseEntity.ok(userService.getUserByFirstName(firstName));
-    }
+    //@GetMapping("/userGivenName")
+    //public ResponseEntity<User>findUserByFirstName(String firstName){
+    //    return ResponseEntity.ok(userService.getUserByFirstName(firstName));
+   // }
 
-//    @GetMapping("/userLastName")
-//    public ResponseEntity<User>findUserByLastName(String lastName){
-//        return ResponseEntity.ok(userService.getUserByLastName(lastName));
-//    }
 
     @GetMapping("/userId")
     public ResponseEntity<User>findUserById(String userId){
@@ -60,6 +56,16 @@ public class UserController {
     @PostMapping("/deleteUserById")
     public ResponseEntity<Object> deleteUser(String custId) {
         userService.deleteUserById(custId);
+        return new ResponseEntity<>("Ok", HttpStatus.OK);
+    }
+// Shannon - added on 11 Sept 2024 to update user's email or name or both
+    @PutMapping("/updateUser")
+    public ResponseEntity<Object> updateUser(String userId, @RequestBody User userReqBody) {
+        User existingUser = userService.getUserByUserId(userId);
+        if (existingUser!=null && !existingUser.getId().isEmpty()){
+        existingUser.setName(userReqBody.getName());
+        existingUser.setEmail(userReqBody.getEmail());
+        userService.updateUserById(existingUser);}
         return new ResponseEntity<>("Ok", HttpStatus.OK);
     }
 
