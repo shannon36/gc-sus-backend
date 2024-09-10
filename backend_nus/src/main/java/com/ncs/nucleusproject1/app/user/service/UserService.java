@@ -61,10 +61,18 @@ public class UserService {
         @Transactional
         public void saveUser(User user) {
                 userRepo.save(user);
+                log.info("New user created: "+user);;
         }
         @Transactional
         public void deleteUserById(String userId) {
                 userRepo.deleteById(userId);
+        }
+
+        // Shannon - added on 11 Sept 2024 to update user's email or name or both
+        @Transactional
+        public void updateUserById(User existingUser) {
+                userRepo.save(existingUser);
+                log.info("Email and/or name changed."+existingUser);
         }
 
 
