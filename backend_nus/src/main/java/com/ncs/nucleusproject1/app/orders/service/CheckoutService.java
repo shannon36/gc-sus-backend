@@ -5,12 +5,14 @@ package com.ncs.nucleusproject1.app.orders.service;
 import com.ncs.nucleusproject1.app.orders.model.Checkout;
 import com.ncs.nucleusproject1.app.orders.model.Order;
 import com.ncs.nucleusproject1.app.orders.model.OrderItems;
+import jakarta.transaction.Transactional;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @Log4j2
@@ -22,6 +24,16 @@ public class CheckoutService {
     @Autowired
     OrderItemService orderItemService;
 
+    //use UUID instead - Shannon, 17 September 2024
+    private String getPaymentRefId() {
+        UUID uuid = UUID.randomUUID();
+        String uuidAsString = uuid.toString();
+
+        System.out.println("Your payment ref UUID is: " + uuidAsString);
+        return uuidAsString;
+    }
+
+    @Transactional
     public void saveOrderViaOrderService (Checkout checkoutDTO) {
 
       log.info("saveNewOrder");
@@ -34,7 +46,7 @@ public class CheckoutService {
 
     private void processOrder(Order newOrder, List<OrderItems> itemsForNewOrder) {
         newOrder.setTotalPrice(getOrderPrice(itemsForNewOrder));
-        newOrder.setPaymentRefId("PT001");
+        newOrder.setPaymentRefId(getPaymentRefId());
         orderService.saveOrder(newOrder);
         String orderId = newOrder.getOrderid();
         processOrderItems(orderId, itemsForNewOrder);
