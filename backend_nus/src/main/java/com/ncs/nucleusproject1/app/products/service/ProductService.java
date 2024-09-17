@@ -4,7 +4,6 @@ package com.ncs.nucleusproject1.app.products.service;
 /*modified on 14 Nov by Shannon to include seller id*/
 
 import com.ncs.nucleusproject1.app.products.model.Product;
-import com.ncs.nucleusproject1.app.products.model.ProductCategory;
 import com.ncs.nucleusproject1.app.products.repository.ProductRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.log4j.Log4j2;
@@ -44,6 +43,18 @@ public class ProductService {
         }catch (Exception e){
             e.printStackTrace();
             log.error("getListOfProductsByCategoryId");
+        }
+        return Collections.emptyList();
+    }
+
+    //added to return query results for product and its category name - Shannon, 18 Sept 2024
+    public List<Object> getProductAndCategoryName(String pdtid){
+        try {
+            log.info("getProductAndCategoryName");
+            return pdtRepo.getProductAndCategoryName(pdtid);
+        }catch (Exception e){
+            e.printStackTrace();
+            log.error("getProductAndCategoryName");
         }
         return Collections.emptyList();
     }

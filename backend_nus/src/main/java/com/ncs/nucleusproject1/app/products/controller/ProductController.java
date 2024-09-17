@@ -7,6 +7,7 @@ import com.ncs.nucleusproject1.app.products.model.Product;
 import com.ncs.nucleusproject1.app.products.model.ProductCategory;
 import com.ncs.nucleusproject1.app.products.service.ProductService;
 import jakarta.persistence.Column;
+import jakarta.persistence.Tuple;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,12 @@ public class ProductController {
     @GetMapping("/getProductsByCategoryId")
     public ResponseEntity<List<Product>>  getProductsByCategoryId(String pdtCatId){
         return ResponseEntity.ok(pdtService.getListOfProductsByCategory(pdtCatId));
+    }
+
+    //added to return query results for product and its category name - Shannon, 18 Sept 2024
+    @GetMapping("/getProductAndCategoryName")
+    public ResponseEntity<List<Object>>  getProductAndCategoryName(String pdtCatId){
+        return ResponseEntity.ok(pdtService.getProductAndCategoryName(pdtCatId));
     }
 
 
