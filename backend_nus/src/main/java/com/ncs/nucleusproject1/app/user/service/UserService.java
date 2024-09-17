@@ -23,10 +23,10 @@ public class UserService {
                 return userRepo.findFirstByEmail(custEmail).orElse(null);
         }
 
-        public User getUserByFirstName(String firstname){
+/*        public User getUserByFirstName(String firstname){
                 log.info("getCustomerByGivenName");
                 return userRepo.findFirstByName(firstname).orElse(null);
-        }
+        }*/
 
 //        public User getUserByLastName(String lastname){
 //                log.info("getCustomerByLastName");

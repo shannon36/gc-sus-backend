@@ -47,10 +47,7 @@ public class ProductCategoryController {
     // Shannon - added on 11 Sept 2024 to update pdt cat name
     @PutMapping("/updateProductCatById")
     public ResponseEntity<Object> updateProductCatById(String pdtCatId, @RequestBody ProductCategory pdtCatReqBody) {
-        ProductCategory currPdtCat = pdtCatService.getProductCategoryById(pdtCatId);
-        if (currPdtCat!=null && !currPdtCat.getCatid().isEmpty()){
-            currPdtCat.setCategoryname(pdtCatReqBody.getCategoryname());
-            pdtCatService.updatePdtCatById(currPdtCat);}
+        pdtCatService.updatePdtCatById(pdtCatId,pdtCatReqBody);
         return new ResponseEntity<>("Ok", HttpStatus.OK);
     }
 
