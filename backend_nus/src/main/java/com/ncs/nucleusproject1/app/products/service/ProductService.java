@@ -14,12 +14,23 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
+
 @Service
 @Log4j2
 public class ProductService {
 
     @Autowired
     ProductRepository pdtRepo;
+
+    //use UUID instead - Shannon, 17 September 2024
+    private String getPdtId() {
+        UUID uuid = UUID.randomUUID();
+        String uuidAsString = uuid.toString();
+
+        System.out.println("Your product UUID is: " + uuidAsString);
+        return uuidAsString;
+    }
     public Product getProductById(String pdtId) {
         log.info("getProductById");
 
@@ -63,6 +74,7 @@ public class ProductService {
     {
         log.info("Product To Be Saved");
         log.info(newProduct);
+        newProduct.setPdtid(getPdtId());
         pdtRepo.save(newProduct);
     }
 

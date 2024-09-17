@@ -13,6 +13,8 @@ import lombok.*;
 @Table(name = "product_category")  //Hibernate Entity - match the java class to the db column name
 public class ProductCategory {
 
+    //use UUID instead - Shannon, 17 September 2024
+
     @Id
     @Column(name="catid")
     private String catid;

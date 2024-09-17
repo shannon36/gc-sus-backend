@@ -21,9 +21,11 @@ import java.util.Date;
 @Table(name = "products")  //Hibernate Entity - match the java class to the db column name
 public class Product {
 
+    //use UUID instead - Shannon, 17 September 2024
+
     @Id
-    @GenericGenerator(name = "pdtid", strategy = "com.ncs.nucleusproject1.app.products.idgenerators.ProductIdGenerator")
-    @GeneratedValue(generator = "pdtid")
+    //@GenericGenerator(name = "pdtid", strategy = "com.ncs.nucleusproject1.app.products.idgenerators.ProductIdGenerator")
+    //@GeneratedValue(generator = "pdtid")
     @Column(name = "pdtid")
     private String pdtid;
 
