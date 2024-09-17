@@ -98,9 +98,20 @@ public class ProductService {
 
     // Shannon - added on 11 Sept 2024 to update pdt
     @Transactional
-    public void updatePdtById(Product currPdt)
-    {       log.info("Current Product to be saved: "+currPdt);
-        pdtRepo.save(currPdt);
+    public void updatePdtById(String pdtId,Product pdtReqBody)
+    {   Product currPdt = getProductById(pdtId);
+        if (currPdt!=null && !currPdt.getCatid().isEmpty()) {
+            currPdt.setSellerid(pdtReqBody.getSellerid());
+            currPdt.setCatid(pdtReqBody.getCatid());
+            currPdt.setName(pdtReqBody.getName());
+            currPdt.setDescription(pdtReqBody.getDescription());
+            currPdt.setImageUrl(pdtReqBody.getImageUrl());
+            currPdt.setUnitPrice(pdtReqBody.getUnitPrice());
+            currPdt.setUnitsInStock(pdtReqBody.getUnitsInStock());
+            currPdt.setLastUpdated(pdtReqBody.getLastUpdated());
+            log.info("Current Product to be saved: " + currPdt);
+            pdtRepo.save(currPdt);
+        }
     }
 
 }
