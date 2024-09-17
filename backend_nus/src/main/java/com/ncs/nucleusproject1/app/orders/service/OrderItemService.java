@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @Log4j2
@@ -19,6 +20,15 @@ public class OrderItemService {
 
     @Autowired
     OrderItemRepository orderItemRepo;
+
+  //use UUID instead - Shannon, 17 September 2024
+  private String getOrderItemId() {
+    UUID uuid = UUID.randomUUID();
+    String uuidAsString = uuid.toString();
+
+    System.out.println("Your order item UUID is: " + uuidAsString);
+    return uuidAsString;
+  }
 
   public OrderItems findByOrderItemId(String orderItemId) {
     log.info("findByOrderid");
@@ -63,6 +73,7 @@ public class OrderItemService {
   {
     log.info("OrderItem To Be Saved");
     log.info(newOrderItem);
+    newOrderItem.setOrderitemid(getOrderItemId());
     orderItemRepo.save(newOrderItem);
   }
 
