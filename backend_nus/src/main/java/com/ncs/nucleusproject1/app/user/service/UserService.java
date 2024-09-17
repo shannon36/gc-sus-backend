@@ -70,9 +70,14 @@ public class UserService {
 
         // Shannon - added on 11 Sept 2024 to update user's email or name or both
         @Transactional
-        public void updateUserById(User existingUser) {
-                userRepo.save(existingUser);
-                log.info("Email and/or name changed."+existingUser);
+        public void updateUserById(String userId, User userReqBody) {
+                User existingUser = getUserByUserId(userId);
+                if (existingUser!=null && !existingUser.getId().isEmpty()) {
+                        existingUser.setName(userReqBody.getName());
+                        existingUser.setEmail(userReqBody.getEmail());
+                        userRepo.save(existingUser);
+                        log.info("Email and/or name changed." + existingUser);
+                }
         }
 
 
