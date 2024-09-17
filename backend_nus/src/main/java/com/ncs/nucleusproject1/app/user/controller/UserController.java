@@ -61,11 +61,7 @@ public class UserController {
 // Shannon - added on 11 Sept 2024 to update user's email or name or both
     @PutMapping("/updateUser")
     public ResponseEntity<Object> updateUser(String userId, @RequestBody User userReqBody) {
-        User existingUser = userService.getUserByUserId(userId);
-        if (existingUser!=null && !existingUser.getId().isEmpty()){
-        existingUser.setName(userReqBody.getName());
-        existingUser.setEmail(userReqBody.getEmail());
-        userService.updateUserById(existingUser);}
+        userService.updateUserById(userId,userReqBody);
         return new ResponseEntity<>("Ok", HttpStatus.OK);
     }
 

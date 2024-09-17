@@ -70,17 +70,7 @@ public class ProductController {
     // Shannon - added on 11 Sept 2024 to update pdt
     @PutMapping("/updateProduct")
     public ResponseEntity<Object> updateProductById(String pdtId, @RequestBody Product pdtReqBody) {
-        Product currPdt = pdtService.getProductById(pdtId);
-        if (currPdt!=null && !currPdt.getCatid().isEmpty()){
-            currPdt.setSellerid(pdtReqBody.getSellerid());
-            currPdt.setCatid(pdtReqBody.getCatid());
-            currPdt.setName(pdtReqBody.getName());
-            currPdt.setDescription(pdtReqBody.getDescription());
-            currPdt.setImageUrl(pdtReqBody.getImageUrl());
-            currPdt.setUnitPrice(pdtReqBody.getUnitPrice());
-            currPdt.setUnitsInStock(pdtReqBody.getUnitsInStock());
-            currPdt.setLastUpdated(pdtReqBody.getLastUpdated());
-            pdtService.updatePdtById(currPdt);}
+        pdtService.updatePdtById(pdtId,pdtReqBody);
         return new ResponseEntity<>("Ok", HttpStatus.OK);
     }
 
