@@ -20,10 +20,10 @@ public interface ProductRepository extends JpaRepository<Product, String> {
     Optional<Product> findDistinctFirstByPdtid(String PdtId);
     void deleteByPdtid(String pdtId);
 
-
+//modified on 18 September 2024, Shannon
     @Query(value="select a.pdtid,a.sellerid,b.categoryname,a.name,a.description," +
             "a.unitPrice,a.imageUrl,a.unitsInStock,a.dateCreated,a.lastUpdated " +
             "from Product a, ProductCategory b " +
-            "where a.catid = b.catid and a.pdtid = :pdtid")
-    List<Object> getProductAndCategoryName(@Param("pdtid") String pdtid);
+            "where a.catid = b.catid and a.sellerid = :sellerid")
+    List<Object> getProductsAndCategoryNameForSeller(@Param("sellerid") String sellerid);
 }

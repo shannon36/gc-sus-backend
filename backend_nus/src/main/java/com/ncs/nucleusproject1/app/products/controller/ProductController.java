@@ -3,20 +3,14 @@ package com.ncs.nucleusproject1.app.products.controller;
 /*@author: Shannon Heng, 10 October 2023*/
 /*modified on 14 Nov by Shannon to include seller id*/
 
+import com.ncs.nucleusproject1.app.products.model.Image;
 import com.ncs.nucleusproject1.app.products.model.Product;
-import com.ncs.nucleusproject1.app.products.model.ProductCategory;
 import com.ncs.nucleusproject1.app.products.service.ProductService;
-import jakarta.persistence.Column;
-import jakarta.persistence.Tuple;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
-import java.util.Date;
 import java.util.List;
 
 @RequestMapping("/Products")
@@ -26,6 +20,7 @@ public class ProductController {
 
     @Autowired
     ProductService pdtService;
+
     @GetMapping("/totalProductList")
     public ResponseEntity<List<Product>> getAllProducts()
     {
@@ -43,9 +38,9 @@ public class ProductController {
     }
 
     //added to return query results for product and its category name - Shannon, 18 Sept 2024
-    @GetMapping("/getProductAndCategoryName")
-    public ResponseEntity<List<Object>>  getProductAndCategoryName(String pdtCatId){
-        return ResponseEntity.ok(pdtService.getProductAndCategoryName(pdtCatId));
+    @GetMapping("/getProductsAndCategoryNameForSeller")
+    public ResponseEntity<List<Object>>  getProductsAndCategoryNameForSeller(String sellerid){
+        return ResponseEntity.ok(pdtService.getProductsAndCategoryNameForSeller(sellerid));
     }
 
 
@@ -73,6 +68,38 @@ public class ProductController {
         pdtService.updatePdtById(pdtId,pdtReqBody);
         return new ResponseEntity<>("Ok", HttpStatus.OK);
     }
+
+    //images endpoints - Shannon, 18 Sept 2024
+    @GetMapping("/findByImageid")
+    public ResponseEntity<Image> findByImageid(String imageid){
+        return ResponseEntity.ok(pdtService.findByImageid(imageid));
+    }
+
+
+    @GetMapping("/getAllImages")
+    public ResponseEntity<List<Image>> getAllImages(){
+        return ResponseEntity.ok(pdtService.getAllImages());
+    }
+
+
+    @PostMapping("/saveImage")
+    public ResponseEntity<Object> saveImage(@RequestBody Image imgReqBody) {
+        pdtService.saveImage(imgReqBody);
+        return new ResponseEntity<>("Ok", HttpStatus.OK);
+    }
+
+    @PostMapping("/deleteImageById")
+    public ResponseEntity<Object> deleteImageById(String imageId) {
+        pdtService.deleteImageById(imageId);
+        return new ResponseEntity<>("Ok", HttpStatus.OK);
+    }
+
+    @PutMapping("/updateImageById")
+    public ResponseEntity<Object> updateImageById(String imageId, @RequestBody Image imgReqBody) {
+        pdtService.updateImageById(imageId,imgReqBody);
+        return new ResponseEntity<>("Ok", HttpStatus.OK);
+    }
+
 
 }
 
