@@ -3,7 +3,9 @@ package com.ncs.nucleusproject1.app.products.service;
 /*@author: Shannon Heng, 10 October 2023*/
 /*modified on 14 Nov by Shannon to include seller id*/
 
+import com.ncs.nucleusproject1.app.products.model.Image;
 import com.ncs.nucleusproject1.app.products.model.Product;
+import com.ncs.nucleusproject1.app.products.repository.ImageRepository;
 import com.ncs.nucleusproject1.app.products.repository.ProductRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.log4j.Log4j2;
@@ -21,6 +23,9 @@ public class ProductService {
 
     @Autowired
     ProductRepository pdtRepo;
+
+    @Autowired
+    ImageRepository imgRepo;
 
     //use UUID instead - Shannon, 17 September 2024
     private String getPdtId() {
@@ -48,13 +53,13 @@ public class ProductService {
     }
 
     //added to return query results for product and its category name - Shannon, 18 Sept 2024
-    public List<Object> getProductAndCategoryName(String pdtid){
+    public List<Object> getProductsAndCategoryNameForSeller(String sellerid){
         try {
-            log.info("getProductAndCategoryName");
-            return pdtRepo.getProductAndCategoryName(pdtid);
+            log.info("getProductsAndCategoryNameForSeller");
+            return pdtRepo.getProductsAndCategoryNameForSeller(sellerid);
         }catch (Exception e){
             e.printStackTrace();
-            log.error("getProductAndCategoryName");
+            log.error("getProductsAndCategoryNameForSeller");
         }
         return Collections.emptyList();
     }
@@ -111,6 +116,53 @@ public class ProductService {
             currPdt.setLastUpdated(pdtReqBody.getLastUpdated());
             log.info("Current Product to be saved: " + currPdt);
             pdtRepo.save(currPdt);
+        }
+    }
+
+
+    //added for images - Shannon, 18 September 2024
+
+    public Image findByImageid(String imageid) {
+        log.info("findByImageid");
+
+        return imgRepo.findByImageid(imageid).orElse(null);
+    }
+
+    public List<Image> getAllImages(){
+        try {
+            log.info("getAllImages");
+            return imgRepo.findAll();
+        }catch (Exception e){
+            e.printStackTrace();
+            log.error("getAllImages");
+        }
+        return Collections.emptyList();
+    }
+
+    @Transactional
+    public void saveImage(Image newImage)
+    {
+        log.info("Image To Be Saved");
+        log.info(newImage);
+        newImage.setImageid(getPdtId()); //use UUID mtd too for images
+        imgRepo.save(newImage);
+    }
+
+    @Transactional
+    public void deleteImageById(String imageId) {
+        log.info("Image To Be Deleted");
+        log.info(imgRepo.findByImageid(imageId));
+        imgRepo.deleteByImageid(imageId);
+    }
+
+    @Transactional
+    public void updateImageById(String imageId,Image imgReqBody)
+    {   Image currImg = findByImageid(imageId);
+        if (currImg!=null && !currImg.getImageid().isEmpty()) {
+            currImg.setDescription(imgReqBody.getDescription());
+            currImg.setImageUrl(imgReqBody.getImageUrl());
+            log.info("Current Image to be saved: " + currImg);
+            imgRepo.save(currImg);
         }
     }
 
