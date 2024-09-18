@@ -21,9 +21,6 @@ public class Order {
     //use UUID instead - Shannon, 17 September 2024
 
     @Id
-    //@GenericGenerator(name = "orderid", strategy = "com.ncs.nucleusproject1.app.orders.idgenerators.OrderIdGenerator")
-    //@GeneratedValue(generator = "orderid")
-    //@GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name="orderid")
     private String orderid;
 

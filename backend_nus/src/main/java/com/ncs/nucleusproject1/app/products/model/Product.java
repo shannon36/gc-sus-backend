@@ -24,8 +24,6 @@ public class Product {
     //use UUID instead - Shannon, 17 September 2024
 
     @Id
-    //@GenericGenerator(name = "pdtid", strategy = "com.ncs.nucleusproject1.app.products.idgenerators.ProductIdGenerator")
-    //@GeneratedValue(generator = "pdtid")
     @Column(name = "pdtid")
     private String pdtid;
 
