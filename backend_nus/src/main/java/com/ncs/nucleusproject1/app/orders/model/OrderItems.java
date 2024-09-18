@@ -23,8 +23,6 @@ public class OrderItems {
     //use UUID instead - Shannon, 17 September 2024
 
     @Id
-    //@GenericGenerator(name = "orderitemid", strategy = "com.ncs.nucleusproject1.app.orders.idgenerators.OrderItemIdGenerator")
-    //@GeneratedValue(generator = "orderitemid")
     @Column(name="orderitemid")
     private String orderitemid;
 
