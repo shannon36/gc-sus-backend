@@ -67,7 +67,6 @@ public class UserController {
     }
 
     @GetMapping("/csrf")
-    @ResponseBody
     public CsrfToken csrf(CsrfToken token) {
         return token; // Returns the CSRF token as a JSON response
     }
