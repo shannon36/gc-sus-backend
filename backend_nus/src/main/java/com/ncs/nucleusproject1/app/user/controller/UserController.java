@@ -66,11 +66,5 @@ public class UserController {
         return new ResponseEntity<>("Ok", HttpStatus.OK);
     }
 
-    @GetMapping("/csrf")
-    public CsrfToken csrf(CsrfToken token) {
-        return token; // Returns the CSRF token as a JSON response
-    }
-
-
     }
 
