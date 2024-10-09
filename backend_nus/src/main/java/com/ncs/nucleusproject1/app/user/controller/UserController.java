@@ -8,6 +8,7 @@ import com.ncs.nucleusproject1.app.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -63,6 +64,12 @@ public class UserController {
     public ResponseEntity<Object> updateUser(String userId, @RequestBody User userReqBody) {
         userService.updateUserById(userId,userReqBody);
         return new ResponseEntity<>("Ok", HttpStatus.OK);
+    }
+
+    @GetMapping("/csrf")
+    @ResponseBody
+    public CsrfToken csrf(CsrfToken token) {
+        return token; // Returns the CSRF token as a JSON response
     }
 
 
