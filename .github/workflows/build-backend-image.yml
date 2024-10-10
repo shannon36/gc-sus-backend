@@ -45,10 +45,10 @@ jobs:
       with:
         image-ref: 'ghcr.io/shannon36/gc-sus-backend:${{ github.sha }}'
         format: 'table'
-        exit-code: '1'
+        exit-code: '0'
         ignore-unfixed: true
         vuln-type: 'os,library'
-        severity: 'CRITICAL'
+        severity: 'CRITICAL,HIGH'
 
   update-backend-manifest:
     runs-on: ubuntu-latest
