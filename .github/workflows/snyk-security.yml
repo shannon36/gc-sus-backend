@@ -21,8 +21,8 @@ jobs:
       - name: Create SARIF directory and move SARIF files
         run: |
           mkdir sarif_files &&
-          mv synk.sarif sarif_files/
+          mv snyk.sarif sarif_files/
       - name: Upload result to GitHub Code Scanning
-        uses: github/codeql-action/upload-sarif@v2
+        uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: sarif_files
