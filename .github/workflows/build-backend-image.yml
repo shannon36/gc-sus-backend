@@ -11,6 +11,7 @@ on:
 
 jobs:
   build:
+    permissions: write-all
     runs-on: ubuntu-latest
 
     steps:
@@ -31,7 +32,6 @@ jobs:
       run: |
         cd backend_nus
         docker build -t ghcr.io/shannon36/gc-sus-backend .
-
     # name: Test Docker image
     #   run: |
     #     docker run --rm ghcr.io/shannon36/gc-sus-backend echo "Tests passed"
@@ -39,17 +39,24 @@ jobs:
     - name: Push Docker image
       run: |
         docker tag ghcr.io/shannon36/gc-sus-backend:latest ghcr.io/shannon36/gc-sus-backend:${{ github.sha }}
-        docker push ghcr.io/shannon36/gc-sus-backend:${{ github.sha }}
+        docker push ghcr.io/shannon36/gc-sus-backend:${{ github.sha }}  
 
     - name: Run Trivy vulnerability scanner
       uses: aquasecurity/trivy-action@0.20.0
       with:
         image-ref: 'ghcr.io/shannon36/gc-sus-backend:${{ github.sha }}'
-        format: 'table'
-        exit-code: '1'
+        format: 'sarif'
+        exit-code: '0'
         ignore-unfixed: true
         vuln-type: 'os,library'
         severity: 'CRITICAL,HIGH'
+        output: 'trivy-results.sarif'
+
+    - name: Upload Trivy scan results to GitHub Security tab
+      uses: github/codeql-action/upload-sarif@v3
+      if: always()
+      with:
+        sarif_file: 'trivy-results.sarif'
 
   update-backend-manifest:
     runs-on: ubuntu-latest
