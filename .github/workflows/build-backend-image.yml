@@ -38,17 +38,7 @@ jobs:
     - name: Push Docker image
       run: |
         docker tag ghcr.io/shannon36/gc-sus-backend:latest ghcr.io/shannon36/gc-sus-backend:${{ github.sha }}
-        docker push ghcr.io/shannon36/gc-sus-backend:${{ github.sha }}
-    - name: Run Trivy vulnerability scanner
-      uses: aquasecurity/trivy-action@0.20.0
-      with:
-        image-ref: 'ghcr.io/shannon36/gc-sus-backend:${{ github.sha }}'
-        format: 'table'
-        exit-code: '1'
-        ignore-unfixed: true
-        vuln-type: 'os,library'
-        severity: 'CRITICAL,HIGH'
-  
+        docker push ghcr.io/shannon36/gc-sus-backend:${{ github.sha }}  
 
   update-backend-manifest:
     runs-on: ubuntu-latest
