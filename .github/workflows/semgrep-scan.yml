@@ -27,7 +27,6 @@ jobs:
           run: |
             semgrep \
               --sarif --output report.sarif \
-              --metrics=off \
               --config=auto
 
         # step 3
