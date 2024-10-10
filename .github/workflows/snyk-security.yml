@@ -14,11 +14,10 @@ jobs:
       - name: Run Snyk to check for vulnerabilities
         uses: snyk/actions/maven-3-jdk-17@master
         continue-on-error: true # To make sure that SARIF upload gets called
-        working-directory: ./gc-sus-backend/backend_nus
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          args: --sarif-file-output=snyk.sarif
+          args: --sarif-file-output=snyk.sarif --file=./backend_nus/pom.xml
       - name: Create SARIF directory and move SARIF files
         run: |
           mkdir sarif_files &&
