@@ -23,3 +23,5 @@ EXPOSE 8080
 # Define the command to run your Java application
 #CMD ["java","-Dserver.port=90" , "-jar", "app.jar"]
 CMD ["java", "-jar", "app.jar"]
+
+
