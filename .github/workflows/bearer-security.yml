@@ -1,5 +1,5 @@
 #Source obtained from:
-#https://github.com/snyk/actions/tree/master/maven-3-jdk-17
+#https://github.com/marketplace/actions/aikido-security-github-action
 #workflow for code scanning only
 
 name: Aikido Security
