@@ -12,6 +12,7 @@ permissions:
   contents: write
 
 jobs:
+  permissions: write-all
   rule_check:
     runs-on: ubuntu-latest
     steps:
