@@ -9,10 +9,9 @@ on:
 
 permissions:
   contents: read
-  security-events: write-all
 
 jobs:
-  security:
+  rule_check:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
