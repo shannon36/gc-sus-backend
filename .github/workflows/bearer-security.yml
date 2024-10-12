@@ -6,14 +6,21 @@ name: Code scanning for maven via bearer
 on:
   pull_request:
     types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  security-events: write-all
+
 jobs:
   security:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: Bearer
-        uses: bearer/bearer-action@v1.46.2
+        id: report
+        uses: bearer/bearer-action@2
         with:
+          diff: true
           format: sarif
           output: results.sarif
       - name: Upload SARIF file
