@@ -8,7 +8,8 @@ on:
     branches:
       - main
 
-permissions: write-all
+permissions: 
+  contents: write-all
 
 jobs:
   rule_check:
