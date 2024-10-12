@@ -2,7 +2,7 @@
 #https://github.com/snyk/actions/tree/master/maven-3-jdk-17
 #workflow for code scanning only
 
-name: Code scanning for maven via Synk
+name: Code scanning for maven via bearer
 on:
   pull_request:
     types: [opened, synchronize, reopened]
@@ -10,9 +10,9 @@ jobs:
   security:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v4
       - name: Bearer
-        uses: bearer/bearer-action@v2
+        uses: bearer/bearer-action@v1.46.2
         with:
           format: sarif
           output: results.sarif
