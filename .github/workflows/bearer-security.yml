@@ -8,8 +8,8 @@ on:
     branches:
       - main
 
-permissions:
-  contents: read
+permissions: 
+  contents: write-all
 
 jobs:
   rule_check:
