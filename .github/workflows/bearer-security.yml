@@ -28,15 +28,16 @@ jobs:
             post-scan-status-comment: 'off'
             post-sast-review-comments: 'off'
             file: pom.xml 
-            format: sarif               # Specify output format as SARIF
-            output: aikido-results.sarif # Name of the SARIF results file
             github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Upload SARIF results
-        if: always()
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: aikido-results.sarif
+      #format: sarif               # Specify output format as SARIF
+      #output: aikido-results.sarif # Name of the SARIF results file
+
+      #- name: Upload SARIF results
+      #  if: always()
+      #  uses: github/codeql-action/upload-sarif@v3
+      #  with:
+      #    sarif_file: aikido-results.sarif
 
       #- name: Run Snyk to check for vulnerabilities
       #  uses: snyk/actions/maven-3-jdk-17@master
