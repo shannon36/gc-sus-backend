@@ -6,10 +6,10 @@ name: Backend app docker image build and manifest update
 
 on:
   push:
-    pull_request:
-    types: [opened, synchronize, reopened]
-    #paths:
-    #  - 'backend_nus/**'
+    #pull_request:
+    #types: [opened, synchronize, reopened]
+    paths:
+      - 'backend_nus/**'
 
 jobs:
   build:
