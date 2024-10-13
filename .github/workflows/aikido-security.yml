@@ -1,34 +1,27 @@
 #Source obtained from:
-#https://github.com/marketplace/actions/aikido-security-github-action
+#https://help.aikido.dev/doc/github-action-setup-for-local-scanner/docn4KpccwdF
 #workflow for code scanning only
 
 name: Aikido Security
-on:
-  pull_request:
+​on:
+  push:
     branches:
-      - '*'
-permissions: write-all
-jobs:
-  aikido-security:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - main
 
-      - name: Detect new vulnerabilities
-        uses: AikidoSec/github-actions-workflow@v1.0.13
-        with:
-            secret-key: ${{ secrets.AIKIDO_SECRET_KEY }}
-            fail-on-timeout: true
-            fail-on-dependency-scan: true
-            fail-on-sast-scan: false
-            fail-on-iac-scan: false
-            minimum-severity: 'CRITICAL'
-            timeout-seconds: 180
-            post-scan-status-comment: 'off'
-            post-sast-review-comments: 'off'
-            file: pom.xml 
-            github-token: ${{ secrets.GITHUB_TOKEN }}
+name: Aikido Scan
+jobs:
+  aikido-local-scan-repo:
+    runs-on: ubuntu-latest
+    container:
+      image: aikidosecurity/local-scanner:v1.0.52
+    steps: 
+      - uses: actions/checkout@v4 
+        with: 
+          token: ${{ secrets.GITHUB_TOKEN }} 
+          path: ./backend/pom.xml
+      - name: Run scan
+        run: aikido-local-scanner scan my-repo --apikey ${{ secrets.AIKIDO_API_KEY }} --repositoryname gc-sus-backend --branchname main
+
 
       #format: sarif               # Specify output format as SARIF
       #output: aikido-results.sarif # Name of the SARIF results file
