@@ -33,6 +33,17 @@ public class UserService {
 //                return userRepo.findFirstByLastname(lastname).orElse(null);
 //        }
 
+        public User findOrCreateUser(String email, String name) {
+                return userRepo.findFirstByEmail(email)
+                        .orElseGet(() -> {
+                                        User newUser = new User();
+                                        newUser.setEmail(email);
+                                        newUser.setName(name);
+                                        newUser.setRoleind("C"); // TODO: Accept role as argument somehow. Default role is C
+                                        return userRepo.save(newUser);
+                                });
+        }
+
         public User getUserByUserId(String userId) {
                 log.info("getCustomerById");
                 return userRepo.findFirstById(userId).orElse(null);
