@@ -4,16 +4,15 @@ package com.ncs.nucleusproject1.app.auth.controller;
 /*modified on 14 October by Shannon to include user role*/
 
 import com.ncs.nucleusproject1.app.user.service.UserService;
-import com.nimbusds.jwt.JWTClaimsSet;
 import com.ncs.nucleusproject1.app.auth.util.JwtUtil;
 import com.ncs.nucleusproject1.app.user.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -24,17 +23,18 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 
-
 import io.jsonwebtoken.JwtException;
+import lombok.extern.log4j.Log4j2;
 
 import java.security.InvalidParameterException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Collections;
 
-
+import com.ncs.nucleusproject1.app.auth.dto.RegistrationRequestDTO;
 
 @RestController
+@Log4j2
 public class AuthController {
 
     private final UserService userService;
@@ -56,7 +56,9 @@ public class AuthController {
             Payload payload = idToken.getPayload();
 
             // 2. Extract email from ID token claims
-            String email = payload.getSubject();
+            String email = payload.getEmail();
+
+            log.info("[/auth/token] user signing in with email: {}", email);
 
             // 3. Look up the user by email in the database
             User user = userService.getUserByEmail(email);
@@ -98,40 +100,62 @@ public class AuthController {
         return idToken;
     }
 
-    // @GetMapping("/auth/token")
-    // public ResponseEntity<?> getToken(Authentication authentication) {
-    //     if (authentication == null) {
-    //         return ResponseEntity.badRequest().body("Invalid oauth2 token");
-    //     }
-    //     JwtAuthenticationToken jwtAuth = (JwtAuthenticationToken) authentication;
-    //     Map<String, Object> claims = jwtAuth.getTokenAttributes();
-
-    //     String email = (String) claims.get("email");
-
-    //     User user = userService.getUserByEmail(email);
-
-    //     String jwtToken = JwtUtil.generateToken(user);
-
-    //     Map<String, Object> response = new HashMap<>();
-    //     response.put("jwt_token", jwtToken);
-
-    //     return ResponseEntity.ok(response);
-    // }
-
-
     @GetMapping("/auth/user")
-    public ResponseEntity<?> getUserInfo(@AuthenticationPrincipal OAuth2User principal) {
-        String email = principal.getAttribute("email");
-        User user = userService.getUserByEmail(email);
+    public ResponseEntity<?> getUserInfo(Authentication authentication) {
+        JwtAuthenticationToken jwtAuth = (JwtAuthenticationToken) authentication;
+        Map<String, Object> attributes = jwtAuth.getTokenAttributes();
 
-        Map<String, Object> userInfo = new HashMap<>();
-        userInfo.put("name", user.getName());
-        userInfo.put("email", user.getEmail());
-        userInfo.put("role", user.getRoleind());
-        userInfo.put("id", user.getId());
-
-        return ResponseEntity.ok(userInfo);
+        return ResponseEntity.ok(attributes);
     }
 
     // TODO: Create a auth/register endpoint
+    @PostMapping("/auth/register")
+    public ResponseEntity<?> registerUser(@RequestHeader("id_token") String idTokenString, @RequestBody RegistrationRequestDTO registrationRequest) {
+        try {
+            // 1. Validate the Google ID token
+            GoogleIdToken idToken = validateIdToken(idTokenString);
+            Payload payload = idToken.getPayload();
+
+            // 2. Extract email from the ID token claims
+            String email = payload.getEmail();
+            log.info("[/auth/register] user registering with email: {}", email);
+
+            // 3. Extract name and role from the RegistrationRequestDTO
+            String name = registrationRequest.getName();
+            if (name == null || name.isEmpty()) {
+                // If name is empty or not passed in during registation, fallback to name from the google id token
+                name = (String) payload.get("name");
+            }
+            String role = registrationRequest.getRole();
+            if (role == null || (!role.equals("S") && !role.equals("C"))) {
+                return ResponseEntity.status(400).body("Invalid role. Must be 'S' for seller or 'C' for customer.");
+            }
+
+            // 4. Check if user already exists
+            User user = userService.getUserByEmail(email);
+
+            if (user == null) {
+                userService.findOrCreateUser(email, name, role);
+                user = userService.getUserByEmail(email);
+            } else {
+                // If the user already exists, return a conflict status
+                return ResponseEntity.status(409).body("User already exists with the provided email");
+            }
+
+            // 6. Generate a JWT token for the user
+            log.info("Generating token with user: {}", user);
+            String jwtToken = JwtUtil.generateToken(user);
+            log.info("Generated token with user: {}", user);
+
+            // 7. Return the generated JWT token in the response
+            Map<String, Object> response = new HashMap<>();
+            response.put("jwt_token", jwtToken);
+
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            log.error("Internal error exception: {}", e);
+            return ResponseEntity.status(500).body("An error occurred during registration");
+        }
+    }
 }

@@ -1,5 +1,7 @@
 package com.ncs.nucleusproject1.app.config;
 
+import java.util.Arrays;
+
 import com.ncs.nucleusproject1.app.auth.filter.JwtAuthenticationFilter;
 
 import org.springframework.context.annotation.Bean;
@@ -9,9 +11,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
-import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -22,8 +24,11 @@ public class SecurityConfig {
         JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter();
 
         http
+            .csrf().disable()
+            .cors()  // Enable CORS support
+            .and()
             .authorizeHttpRequests(a -> a
-                .requestMatchers("/", "/error", "/webjars/**", "/auth/**").permitAll()
+                .requestMatchers("/", "/error", "/webjars/**", "/auth/token", "/auth/register").permitAll()
                 .anyRequest().authenticated()
             )
             .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -31,18 +36,18 @@ public class SecurityConfig {
         return http.build();
     }
 
-    // @Bean
-    // public JwtAuthenticationConverter jwtAuthenticationConverter() {
-    //     JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
+    // CORS configuration
+    @Bean
+    public CorsFilter corsFilter() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration config = new CorsConfiguration();
 
-    //     // Map roles from the "roles" claim in the JWT
-    //     JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
-    //     grantedAuthoritiesConverter.setAuthorityPrefix("ROLE_");  // Prefix roles with "ROLE_"
-    //     grantedAuthoritiesConverter.setAuthoritiesClaimName("roles");  // Extract roles from "roles" claim
+        config.setAllowCredentials(true);  // Allows cookies to be sent
+        config.setAllowedOrigins(Arrays.asList("http://localhost:4200"));  // Frontend origin
+        config.setAllowedHeaders(Arrays.asList("Origin", "Content-Type", "Accept", "Authorization", "id_token"));  // Allowed headers
+        config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));  // Allowed HTTP methods (including OPTIONS)
 
-    //     converter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter);
-
-    //     return converter;
-    // }
-
+        source.registerCorsConfiguration("/**", config);  // Apply to all endpoints
+        return new CorsFilter(source);
+    }
 }
