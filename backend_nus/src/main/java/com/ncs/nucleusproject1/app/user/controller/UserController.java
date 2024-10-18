@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
 import java.util.List;
 
 @RequestMapping("/Users")
@@ -63,6 +65,16 @@ public class UserController {
     public ResponseEntity<Object> updateUser(String userId, @RequestBody User userReqBody) {
         userService.updateUserById(userId,userReqBody);
         return new ResponseEntity<>("Ok", HttpStatus.OK);
+    }
+
+    @GetMapping("/loginSuccess")
+    public String loginSuccess(Principal principal) {
+        return "Login successful! User: " + principal.getName();
+    }
+
+    @GetMapping("/api/protected")
+    public String protectedEndpoint(Principal principal) {
+        return "Accessing protected endpoint! User: " + principal.getName();
     }
 
 
