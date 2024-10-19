@@ -9,8 +9,11 @@ import jakarta.transaction.Transactional;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.security.InvalidParameterException;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @Log4j2
@@ -32,6 +35,23 @@ public class UserService {
 //                log.info("getCustomerByLastName");
 //                return userRepo.findFirstByLastname(lastname).orElse(null);
 //        }
+
+        public User findOrCreateUser(String email, String name, String role) {
+
+                if (!"C".equals(role) && !"S".equals(role)) {
+                        throw new InvalidParameterException("Invalid role provided. Only 'C' or 'S' are allowed.");
+                }
+                return userRepo.findFirstByEmail(email)
+                        .orElseGet(() -> {
+                                        User newUser = new User();
+                                        String newUserUUID = getUserId();
+                                        newUser.setEmail(email);
+                                        newUser.setName(name);
+                                        newUser.setRoleind(role); // TODO: Accept role as argument somehow. Default role is C
+                                        newUser.setId(newUserUUID);
+                                        return userRepo.save(newUser);
+                                });
+        }
 
         public User getUserByUserId(String userId) {
                 log.info("getCustomerById");
@@ -80,9 +100,11 @@ public class UserService {
                 }
         }
 
+        private String getUserId() {
+                UUID uuid = UUID.randomUUID();
+                String uuidAsString = uuid.toString();
 
+                System.out.println("Your user UUID is: " + uuidAsString);
+                return uuidAsString;
+        }
 }
-
-
-
-
