@@ -28,7 +28,7 @@ public class SecurityConfig {
             .cors()
             .and()
             .authorizeHttpRequests(a -> a
-                .requestMatchers("/", "/error", "/webjars/**", "/auth/**").permitAll()
+                .requestMatchers("/", "/error", "/webjars/**", "/auth/token", "/auth/register").permitAll()
                 .anyRequest().authenticated()
             )
             .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
