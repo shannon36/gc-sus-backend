@@ -4,16 +4,13 @@ package com.ncs.nucleusproject1.app.auth.controller;
 /*modified on 14 October by Shannon to include user role*/
 
 import com.ncs.nucleusproject1.app.user.service.UserService;
-import com.nimbusds.jwt.JWTClaimsSet;
 import com.ncs.nucleusproject1.app.auth.dto.RegistrationRequestDTO;
 import com.ncs.nucleusproject1.app.auth.util.JwtUtil;
 import com.ncs.nucleusproject1.app.user.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -88,10 +85,28 @@ public class AuthController {
     }
 
     @GetMapping("/auth/user")
-    public ResponseEntity<?> getUserInfo(@AuthenticationPrincipal OAuth2User principal) {
-        String email = principal.getAttribute("email");
+    public ResponseEntity<?> getUserInfo(Authentication authentication) {
+        // Ensure the authentication object is valid
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(401).body("Unauthorized: No valid authentication found.");
+        }
+
+        // Extract the user details from the authentication object
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String email = userDetails.getUsername();  // Email is stored as username in the UserDetails
+        String role = userDetails.getAuthorities().stream()
+                                .map(grantedAuthority -> grantedAuthority.getAuthority())
+                                .findFirst().orElse("ROLE_C");  // Assuming a single role
+        log.info("User email: {}. User role: {}", email, role);
+
+        // Fetch the user from the database using the email
         User user = userService.getUserByEmail(email);
 
+        if (user == null) {
+            return ResponseEntity.status(404).body("User not found.");
+        }
+
+        // Prepare user info to return
         Map<String, Object> userInfo = new HashMap<>();
         userInfo.put("name", user.getName());
         userInfo.put("email", user.getEmail());
