@@ -5,6 +5,7 @@ package com.ncs.nucleusproject1.app.auth.controller;
 
 import com.ncs.nucleusproject1.app.user.service.UserService;
 import com.nimbusds.jwt.JWTClaimsSet;
+import com.ncs.nucleusproject1.app.auth.dto.RegistrationRequestDTO;
 import com.ncs.nucleusproject1.app.auth.util.JwtUtil;
 import com.ncs.nucleusproject1.app.user.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -26,6 +29,7 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 
 
 import io.jsonwebtoken.JwtException;
+import lombok.extern.log4j.Log4j2;
 
 import java.security.InvalidParameterException;
 import java.util.HashMap;
@@ -35,6 +39,7 @@ import java.util.Collections;
 
 
 @RestController
+@Log4j2
 public class AuthController {
 
     private final UserService userService;
@@ -56,7 +61,7 @@ public class AuthController {
             Payload payload = idToken.getPayload();
 
             // 2. Extract email from ID token claims
-            String email = payload.getSubject();
+            String email = payload.getEmail();
 
             // 3. Look up the user by email in the database
             User user = userService.getUserByEmail(email);
@@ -70,54 +75,17 @@ public class AuthController {
 
             // 5. Return the generated JWT token in the response
             Map<String, Object> response = new HashMap<>();
-            response.put("jwt_token", jwtToken);
+            response.put("jwt", jwtToken);
 
             return ResponseEntity.ok(response);
 
         } catch (JwtException e) {
             return ResponseEntity.status(401).body("Invalid ID token");
         } catch (Exception e) {
+            log.error("[/auth/token] internal error: {}", e);
             return ResponseEntity.status(500).body("An error occurred while processing the request");
         }
     }
-
-    private GoogleIdToken validateIdToken(String idTokenString) throws Exception {
-        NetHttpTransport transport = new NetHttpTransport();
-        JsonFactory jsonFactory = new JacksonFactory();
-
-        GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(transport, jsonFactory)
-                .setAudience(Collections.singletonList(CLIENT_ID))  // Set your client ID
-                .build();
-
-        // (Receive idTokenString by HTTPS POST)
-
-        GoogleIdToken idToken = verifier.verify(idTokenString);
-        if (idToken == null) {
-            throw new InvalidParameterException("Invalid google id token");
-        }
-        return idToken;
-    }
-
-    // @GetMapping("/auth/token")
-    // public ResponseEntity<?> getToken(Authentication authentication) {
-    //     if (authentication == null) {
-    //         return ResponseEntity.badRequest().body("Invalid oauth2 token");
-    //     }
-    //     JwtAuthenticationToken jwtAuth = (JwtAuthenticationToken) authentication;
-    //     Map<String, Object> claims = jwtAuth.getTokenAttributes();
-
-    //     String email = (String) claims.get("email");
-
-    //     User user = userService.getUserByEmail(email);
-
-    //     String jwtToken = JwtUtil.generateToken(user);
-
-    //     Map<String, Object> response = new HashMap<>();
-    //     response.put("jwt_token", jwtToken);
-
-    //     return ResponseEntity.ok(response);
-    // }
-
 
     @GetMapping("/auth/user")
     public ResponseEntity<?> getUserInfo(@AuthenticationPrincipal OAuth2User principal) {
@@ -133,5 +101,66 @@ public class AuthController {
         return ResponseEntity.ok(userInfo);
     }
 
-    // TODO: Create a auth/register endpoint
+    @PostMapping("/auth/register")
+    public ResponseEntity<?> registerUser(@RequestHeader("id_token") String idTokenString, @RequestBody RegistrationRequestDTO registrationRequest) {
+        try {
+            // 1. Validate the Google ID token
+            GoogleIdToken idToken = validateIdToken(idTokenString);
+            Payload payload = idToken.getPayload();
+
+            // 2. Extract email from the ID token claims
+            String email = payload.getEmail();
+            String name = (String) payload.get("name");
+
+            if (registrationRequest.getName() != null && !registrationRequest.getName().isEmpty()) {
+                name = registrationRequest.getName();
+            }
+
+            // 3. Extract role from the RegistrationRequestDTO
+            String role = registrationRequest.getRole();
+            if (role == null || (!role.equals("S") && !role.equals("C"))) {
+                return ResponseEntity.status(400).body("Invalid role. Must be 'S' for seller or 'C' for customer.");
+            }
+
+            // 4. Check if user already exists
+            User user = userService.getUserByEmail(email);
+
+            if (user == null) {
+                // 5. If user does not exist, create a new user
+                userService.findOrCreateUser(email, name, role);
+            } else {
+                // If the user already exists, return a conflict status
+                return ResponseEntity.status(409).body("User already exists with the provided email");
+            }
+
+            user = userService.getUserByEmail(email);
+            // 6. Generate a JWT token for the user
+            String jwtToken = JwtUtil.generateToken(user);
+
+            // 7. Return the generated JWT token in the response
+            Map<String, Object> response = new HashMap<>();
+            response.put("jwt", jwtToken);
+
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            log.error("[/auth/register] internal error: {}", e);
+            return ResponseEntity.status(500).body("An error occurred during registration");
+        }
+    }
+
+    private GoogleIdToken validateIdToken(String idTokenString) throws Exception {
+        NetHttpTransport transport = new NetHttpTransport();
+        JsonFactory jsonFactory = new JacksonFactory();
+
+        GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(transport, jsonFactory)
+                .setAudience(Collections.singletonList(CLIENT_ID))  // Set your client ID
+                .build();
+
+        GoogleIdToken idToken = verifier.verify(idTokenString);
+        if (idToken == null) {
+            throw new InvalidParameterException("Invalid google id token");
+        }
+        return idToken;
+    }
 }

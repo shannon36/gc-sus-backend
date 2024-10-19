@@ -10,9 +10,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
-import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
-
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -22,6 +19,7 @@ public class SecurityConfig {
         JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter();
 
         http
+            .csrf().disable()
             .authorizeHttpRequests(a -> a
                 .requestMatchers("/", "/error", "/webjars/**", "/auth/**").permitAll()
                 .anyRequest().authenticated()
@@ -30,19 +28,5 @@ public class SecurityConfig {
             .and().addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class));  // Add JWT filter before Spring's built-in authentication
         return http.build();
     }
-
-    // @Bean
-    // public JwtAuthenticationConverter jwtAuthenticationConverter() {
-    //     JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
-
-    //     // Map roles from the "roles" claim in the JWT
-    //     JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
-    //     grantedAuthoritiesConverter.setAuthorityPrefix("ROLE_");  // Prefix roles with "ROLE_"
-    //     grantedAuthoritiesConverter.setAuthoritiesClaimName("roles");  // Extract roles from "roles" claim
-
-    //     converter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter);
-
-    //     return converter;
-    // }
 
 }

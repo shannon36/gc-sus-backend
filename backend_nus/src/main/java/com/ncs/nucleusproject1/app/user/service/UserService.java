@@ -38,7 +38,7 @@ public class UserService {
 
         public User findOrCreateUser(String email, String name, String role) {
 
-                if (!"C".equals(role) || !"S".equals(role)) {
+                if (!"C".equals(role) && !"S".equals(role)) {
                         throw new InvalidParameterException("Invalid role provided. Only 'C' or 'S' are allowed.");
                 }
                 return userRepo.findFirstByEmail(email)
