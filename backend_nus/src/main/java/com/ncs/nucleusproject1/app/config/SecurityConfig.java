@@ -43,7 +43,7 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);  // Allow credentials such as cookies or Authorization headers
         config.setAllowedOrigins(Arrays.asList("http://localhost:4200", "http://13.229.63.255:8080", "https://smartcart.nus.yaphanyee.com"));  // Allow your frontend's origin
-        config.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));  // Allow these headers
+        config.setAllowedHeaders(Arrays.asList("*"));  // Allow these headers
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));  // Allow these HTTP methods
         source.registerCorsConfiguration("/**", config);  // Apply CORS configuration to all endpoints
         return new CorsFilter(source);
