@@ -2,7 +2,7 @@ package com.ncs.nucleusproject1.app.user.controller;
 
 import org.springframework.security.core.Authentication;
 
-/*@author: Shannon Heng (Cheow Fu's baby girl), 9 October 2023*/
+/*@author: Shannon Heng, 9 October 2023*/
 /*modified on 14 Nov by Shannon to include user role*/
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
