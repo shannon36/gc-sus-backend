@@ -27,10 +27,20 @@ public class SecurityConfig {
             .csrf().disable()
             .cors()
             .and()
-            .authorizeHttpRequests(a -> a
-                .requestMatchers("/", "/error", "/webjars/**", "/auth/token", "/auth/register").permitAll()
-                .anyRequest().authenticated()
-            )
+            .authorizeHttpRequests(a ->
+                a.requestMatchers(
+                    "/",
+                    "/error",
+                    "/webjars/**",
+                    "/auth/token",
+                    "/auth/register",
+                    "/swagger-ui/**", // Swagger UI static resources
+                    "/v3/api-docs/**", // OpenAPI documentation
+                    "/swagger-resources/**", // Swagger resources
+                    "/webjars/**", // Webjars (for Swagger UI assets)
+                    "/swagger-ui.html" // Main Swagger UI page
+                ).permitAll()
+            .anyRequest().authenticated())
             .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and().addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class));  // Add JWT filter before Spring's built-in authentication
         return http.build();

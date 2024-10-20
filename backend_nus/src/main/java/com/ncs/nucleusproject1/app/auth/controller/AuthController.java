@@ -1,6 +1,6 @@
 package com.ncs.nucleusproject1.app.auth.controller;
 
-/*@author: Shannon Heng (Cheow Fu's baby girl), 14 October 2024*/
+/*@author: Shannon Heng, 14 October 2024*/
 /*modified on 14 October by Shannon to include user role*/
 
 import com.ncs.nucleusproject1.app.user.service.UserService;
