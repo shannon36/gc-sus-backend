@@ -28,7 +28,7 @@ public class SecurityConfig {
             .cors()
             .and()
             .authorizeHttpRequests(a -> a
-                .requestMatchers("/", "/error", "/webjars/**", "/auth/**").permitAll()
+                .requestMatchers("/", "/error", "/webjars/**", "/auth/token", "/auth/register").permitAll()
                 .anyRequest().authenticated()
             )
             .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -42,7 +42,7 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(false);  // Allow credentials such as cookies or Authorization headers
-        config.setAllowedOrigins(Arrays.asList("http://localhost:4200", "http://13.229.63.255:8080", "https://smartcart.nus.yaphanyee.com"));  // Allow your frontend's origin
+        config.setAllowedOrigins(Arrays.asList("http://localhost:4200", "https://smartcartgcsus.store"));  // Allow your frontend's origin
         config.setAllowedHeaders(Arrays.asList("*"));  // Allow these headers
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));  // Allow these HTTP methods
         source.registerCorsConfiguration("/**", config);  // Apply CORS configuration to all endpoints

@@ -1,12 +1,22 @@
 package com.ncs.nucleusproject1.app.auth.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class RegistrationRequestDTO {
+
+    @JsonProperty("id_token")
+    private String idToken;
 
     private String role;  // Role can be "S" for seller or "C" for customer
     private String name;
 
-    // You can add other fields here if needed
-    // Example: private String fullName;
+    public String getIdToken() {
+        return idToken;
+    }
+
+    public void setIdToken(String idToken) {
+        this.idToken = idToken;
+    }
 
     public String getName() {
         return name;

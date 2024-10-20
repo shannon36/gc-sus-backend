@@ -14,7 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
@@ -50,7 +50,7 @@ public class AuthController {
     }
 
     @GetMapping("/auth/token")
-    public ResponseEntity<?> getToken(@RequestHeader("id_token") String idTokenString) {
+    public ResponseEntity<?> getToken(@RequestParam("id_token") String idTokenString) {
         try {
             // 1. Validate the ID token
             GoogleIdToken idToken = validateIdToken(idTokenString);
@@ -117,9 +117,10 @@ public class AuthController {
     }
 
     @PostMapping("/auth/register")
-    public ResponseEntity<?> registerUser(@RequestHeader("id_token") String idTokenString, @RequestBody RegistrationRequestDTO registrationRequest) {
+    public ResponseEntity<?> registerUser(@RequestBody RegistrationRequestDTO registrationRequest) {
         try {
             // 1. Validate the Google ID token
+            String idTokenString = registrationRequest.getIdToken();
             GoogleIdToken idToken = validateIdToken(idTokenString);
             Payload payload = idToken.getPayload();
 
